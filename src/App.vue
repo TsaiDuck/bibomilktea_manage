@@ -1,32 +1,61 @@
 <template>
-  <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view/>
+  <div id="app" class="app" ref="app">
+    <router-view />
   </div>
 </template>
 
-<style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+<script>
+export default {
+  data() {
+    return {
+      windowWidth: window.innerWidth + 'px',
+      windowHeight: window.innerHeight - 1 + 'px'
     }
+  },
+  mounted() {
+    this.$refs.app.style.width = window.innerWidth + 'px'
+    this.$refs.app.style.height =
+      document.documentElement.clientHeight - 1 + 'px'
+    const _this = this
+    window.onresize = () => {
+      return (() => {
+        _this.windowWidth = window.innerWidth + 'px'
+        _this.windowHeight = window.innerHeight - 1 + 'px'
+      })()
+    }
+  },
+  watch: {
+    windowWidth() {
+      if (!this.timer) {
+        this.timer = true
+        let _this = this
+        setTimeout(function () {
+          _this.$refs.app.style.width = _this.windowWidth
+          _this.timer = false
+        }, 500)
+      }
+    },
+    windowHeight() {
+      if (!this.timer) {
+        this.timer = true
+        let _this = this
+        setTimeout(function () {
+          _this.$refs.app.style.height = _this.windowHeight
+          _this.timer = false
+        }, 500)
+      }
+    }
+  },
+  beforeDestroy() {
+    if (!this.$socket) return
+    this.$socket.close()
   }
+}
+</script>
+
+<style>
+* {
+  margin: 0px;
+  padding: 0px;
 }
 </style>
